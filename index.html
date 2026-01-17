@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Space Explorer Academy</title>
+    <style>
+        body {
+            background-color: #0b0d17;
+            color: white;
+            font-family: 'Comic Sans MS', 'Chalkboard SE', sans-serif;
+            text-align: center;
+            margin: 0;
+            overflow-x: hidden;
+        }
+
+        #title-screen {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: radial-gradient(circle, #1b2735 0%, #090a0f 100%);
+        }
+
+        .planet-button {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 4px solid white;
+            margin: 15px;
+            cursor: pointer;
+            transition: transform 0.3s;
+            font-weight: bold;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.2rem;
+            color: black;
+        }
+
+        .planet-button:hover { transform: scale(1.2); }
+
+        /* Planet Colors */
+        #mercury { background-color: #A5A5A5; }
+        #venus { background-color: #E3BB76; }
+        #earth { background-color: #2271B3; color: white; }
+        #mars { background-color: #E27B58; }
+
+        #info-panel {
+            display: none;
+            padding: 50px;
+            min-height: 100vh;
+        }
+
+        .back-btn {
+            padding: 15px 30px;
+            font-size: 1.5rem;
+            background: #ffcc00;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="title-screen">
+        <h1>🚀 Space Explorer Academy 🌟</h1>
+        <p>Click a planet to start our adventure!</p>
+        <div id="planet-list">
+            <div class="planet-button" id="mercury" onclick="showPlanet('Mercury', 'Solid Rock', 'Smallest', 'Closest to Sun')">Mercury</div>
+            <div class="planet-button" id="venus" onclick="showPlanet('Venus', 'Solid Rock', 'Earth-sized', 'Very Hot!')">Venus</div>
+            <div class="planet-button" id="earth" onclick="showPlanet('Earth', 'Solid & Liquid', 'Our Home', 'Perfect Distance')">Earth</div>
+            <div class="planet-button" id="mars" onclick="showPlanet('Mars', 'Solid Rock', 'Half of Earth', 'The Red Planet')">Mars</div>
+        </div>
+    </div>
+
+    <div id="info-panel">
+        <h1 id="planet-name">Planet Name</h1>
+        <div style="font-size: 1.5rem; line-height: 2;">
+            <p><strong>State:</strong> <span id="planet-state"></span></p>
+            <p><strong>Size:</strong> <span id="planet-size"></span></p>
+            <p><strong>Fact:</strong> <span id="planet-dist"></span></p>
+        </div>
+        <br>
+        <button class="back-btn" onclick="goBack()">⬅ Go Back</button>
+    </div>
+
+    <script>
+        function showPlanet(name, state, size, dist) {
+            document.getElementById('title-screen').style.display = 'none';
+            document.getElementById('info-panel').style.display = 'block';
+            
+            document.getElementById('planet-name').innerText = name;
+            document.getElementById('planet-state').innerText = state;
+            document.getElementById('planet-size').innerText = size;
+            document.getElementById('planet-dist').innerText = dist;
+
+            // Voice Support for Beginner Users
+            const message = new SpeechSynthesisUtterance(`This is ${name}. It is made of ${state}.`);
+            window.speechSynthesis.speak(message);
+        }
+
+        function goBack() {
+            document.getElementById('title-screen').style.display = 'flex';
+            document.getElementById('info-panel').style.display = 'none';
+            window.speechSynthesis.cancel();
+        }
+    </script>
+</body>
+</html>

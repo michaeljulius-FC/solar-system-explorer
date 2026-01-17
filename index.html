@@ -23,11 +23,12 @@
             background: radial-gradient(circle, #1b2735 0%, #090a0f 100%);
         }
 
+        /* Large, colorful buttons for small hands */
         .planet-button {
-            width: 120px;
-            height: 120px;
+            width: 140px;
+            height: 140px;
             border-radius: 50%;
-            border: 4px solid white;
+            border: 6px solid white;
             margin: 15px;
             cursor: pointer;
             transition: transform 0.3s;
@@ -35,13 +36,13 @@
             display: inline-flex;
             justify-content: center;
             align-items: center;
-            font-size: 1.2rem;
+            font-size: 1.4rem;
             color: black;
+            box-shadow: 0 0 20px rgba(255,255,255,0.2);
         }
 
-        .planet-button:hover { transform: scale(1.2); }
+        .planet-button:hover { transform: scale(1.1) rotate(5deg); }
 
-        /* Planet Colors */
         #mercury { background-color: #A5A5A5; }
         #venus { background-color: #E3BB76; }
         #earth { background-color: #2271B3; color: white; }
@@ -49,64 +50,105 @@
 
         #info-panel {
             display: none;
-            padding: 50px;
+            padding: 40px;
             min-height: 100vh;
+            background: #0b0d17;
         }
 
         .back-btn {
-            padding: 15px 30px;
-            font-size: 1.5rem;
+            padding: 20px 40px;
+            font-size: 1.8rem;
             background: #ffcc00;
             border: none;
-            border-radius: 10px;
+            border-radius: 20px;
             cursor: pointer;
+            margin-top: 30px;
+            color: #000;
+        }
+
+        .narrator-status {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background: rgba(255,255,255,0.1);
+            padding: 10px;
+            border-radius: 10px;
+            font-size: 0.8rem;
         }
     </style>
 </head>
 <body>
 
+    <div class="narrator-status">🔊 Narrator: Ready</div>
+
     <div id="title-screen">
-        <h1>🚀 Space Explorer Academy 🌟</h1>
-        <p>Click a planet to start our adventure!</p>
+        <h1 style="font-size: 3rem;">🚀 Space Academy 🌟</h1>
+        <p style="font-size: 1.5rem;">Pick a planet to hear its story!</p>
+        
         <div id="planet-list">
-            <div class="planet-button" id="mercury" onclick="showPlanet('Mercury', 'Solid Rock', 'Smallest', 'Closest to Sun')">Mercury</div>
-            <div class="planet-button" id="venus" onclick="showPlanet('Venus', 'Solid Rock', 'Earth-sized', 'Very Hot!')">Venus</div>
-            <div class="planet-button" id="earth" onclick="showPlanet('Earth', 'Solid & Liquid', 'Our Home', 'Perfect Distance')">Earth</div>
-            <div class="planet-button" id="mars" onclick="showPlanet('Mars', 'Solid Rock', 'Half of Earth', 'The Red Planet')">Mars</div>
+            <div class="planet-button" id="mercury" onclick="speakAndShow('Mercury', 'Solid Rock', 'Very Small', 'It is the closest planet to the Sun!')">Mercury</div>
+            <div class="planet-button" id="venus" onclick="speakAndShow('Venus', 'Solid Rock', 'Same as Earth', 'It is the hottest planet of them all!')">Venus</div>
+            <div class="planet-button" id="earth" onclick="speakAndShow('Earth', 'Solid and Water', 'Medium', 'This is our home! It has the only air we can breathe.')">Earth</div>
+            <div class="planet-button" id="mars" onclick="speakAndShow('Mars', 'Solid Rock', 'Small', 'It is known as the Red Planet.')">Mars</div>
         </div>
     </div>
 
     <div id="info-panel">
-        <h1 id="planet-name">Planet Name</h1>
-        <div style="font-size: 1.5rem; line-height: 2;">
-            <p><strong>State:</strong> <span id="planet-state"></span></p>
-            <p><strong>Size:</strong> <span id="planet-size"></span></p>
-            <p><strong>Fact:</strong> <span id="planet-dist"></span></p>
+        <h1 id="planet-name" style="font-size: 4rem; color: #ffcc00;">Name</h1>
+        <div style="font-size: 2rem; background: rgba(255,255,255,0.1); padding: 30px; border-radius: 30px; display: inline-block;">
+            <p>🪨 <strong>State:</strong> <span id="planet-state"></span></p>
+            <p>📏 <strong>Size:</strong> <span id="planet-size"></span></p>
+            <p>✨ <strong>Fun Fact:</strong> <br><span id="planet-dist"></span></p>
         </div>
         <br>
         <button class="back-btn" onclick="goBack()">⬅ Go Back</button>
     </div>
 
     <script>
-        function showPlanet(name, state, size, dist) {
+        // The Narrator Logic
+        const synth = window.speechSynthesis;
+
+        function speakAndShow(name, state, size, fact) {
+            // 1. Update the Screen
             document.getElementById('title-screen').style.display = 'none';
             document.getElementById('info-panel').style.display = 'block';
             
             document.getElementById('planet-name').innerText = name;
             document.getElementById('planet-state').innerText = state;
             document.getElementById('planet-size').innerText = size;
-            document.getElementById('planet-dist').innerText = dist;
+            document.getElementById('planet-dist').innerText = fact;
 
-            // Voice Support for Beginner Users
-            const message = new SpeechSynthesisUtterance(`This is ${name}. It is made of ${state}.`);
-            window.speechSynthesis.speak(message);
+            // 2. The Narrator Speaks
+            // Stop any current talking first
+            synth.cancel(); 
+
+            const intro = new SpeechSynthesisUtterance(`Welcome to ${name}!`);
+            const details = new SpeechSynthesisUtterance(`It is made of ${state}. In size, it is ${size}. Here is a fun fact: ${fact}`);
+            
+            // Make the voice sound a bit friendlier (slower and slightly higher pitch)
+            intro.rate = 0.9;
+            details.rate = 0.9;
+            intro.pitch = 1.2;
+            details.pitch = 1.2;
+
+            synth.speak(intro);
+            synth.speak(details);
         }
 
         function goBack() {
+            synth.cancel(); // Stop talking if we leave the page
             document.getElementById('title-screen').style.display = 'flex';
             document.getElementById('info-panel').style.display = 'none';
-            window.speechSynthesis.cancel();
         }
+
+        // Friendly greeting when she first opens the app
+        window.onload = () => {
+            const welcome = new SpeechSynthesisUtterance("Hello Space Explorer! Pick a planet to begin!");
+            welcome.rate = 0.9;
+            welcome.pitch = 1.1;
+            // Most browsers require a click before they will play sound, 
+            // so this might play after her first interaction.
+        };
     </script>
 </body>
 </html>

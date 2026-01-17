@@ -17,16 +17,9 @@
             min-height: 100vh;
         }
 
-        /* Copyright Styling */
-        .copyright-text {
-            font-size: 0.9rem;
-            color: rgba(255, 255, 255, 0.5);
-            padding: 10px;
-        }
-
+        .copyright-text { font-size: 0.9rem; color: rgba(255, 255, 255, 0.5); padding: 10px; }
         header { padding: 20px 10px 0 10px; }
         footer { margin-top: auto; padding: 20px; }
-
         h1 { font-size: 3rem; color: #ffcc00; text-shadow: 2px 2px #ff6600; margin: 10px 0; }
 
         .planet-grid {
@@ -47,16 +40,10 @@
             border: 3px solid transparent;
         }
 
-        .planet-card:hover {
-            transform: scale(1.1);
-            border-color: #ffcc00;
-            background: rgba(255, 255, 255, 0.2);
-        }
-
+        .planet-card:hover { transform: scale(1.1); border-color: #ffcc00; background: rgba(255, 255, 255, 0.2); }
         .planet-icon { font-size: 4rem; display: block; margin-bottom: 10px; }
 
-        /* Full Screen Info View */
-        #info-panel {
+        #info-panel, #quiz-panel {
             display: none;
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -66,7 +53,7 @@
             z-index: 10;
         }
 
-        .fact-box {
+        .fact-box, .quiz-box {
             background: white;
             color: black;
             border-radius: 30px;
@@ -78,16 +65,20 @@
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
 
-        .back-btn {
-            margin-top: 30px;
-            padding: 20px 50px;
-            font-size: 2rem;
-            background: #ffcc00;
+        .btn {
+            margin: 10px;
+            padding: 15px 40px;
+            font-size: 1.5rem;
             border: none;
             border-radius: 50px;
             cursor: pointer;
             font-weight: bold;
         }
+
+        .quiz-btn { background: #00ccff; color: white; }
+        .back-btn { background: #ffcc00; color: black; }
+        .choice-btn { background: #f0f0f0; border: 2px solid #ccc; width: 100%; margin-top: 15px; }
+        .choice-btn:hover { background: #ffcc00; }
     </style>
 </head>
 <body>
@@ -99,31 +90,24 @@
 
     <div id="main-menu">
         <p style="font-size: 1.5rem;">Tap a planet to learn its secrets!</p>
-        
         <div class="planet-grid">
-            <div class="planet-card" onclick="openPlanet('Mercury', '🪨 Solid Rock', 'Smallest', 'I am the closest to the Sun and very fast!', 'Mercury')">
+            <div class="planet-card" onclick="openPlanet('Mercury', '🪨 Solid Rock', 'Smallest', 'I am the closest to the Sun!', 'Mercury', 'Which planet is closest to the sun?')">
                 <span class="planet-icon">🌑</span> Mercury
             </div>
-            <div class="planet-card" onclick="openPlanet('Venus', '🪨 Solid Rock', 'Medium', 'I am the hottest planet! I shine very bright.', 'Venus')">
+            <div class="planet-card" onclick="openPlanet('Venus', '🪨 Solid Rock', 'Medium', 'I am the hottest planet!', 'Venus', 'Is Venus hot or cold?')">
                 <span class="planet-icon">🌕</span> Venus
             </div>
-            <div class="planet-card" onclick="openPlanet('Earth', '🌍 Solid & Water', 'Medium', 'This is home! It has air to breathe and water to drink.', 'Earth')">
+            <div class="planet-card" onclick="openPlanet('Earth', '🌍 Solid & Water', 'Medium', 'This is home! It has air to breathe.', 'Earth', 'Which planet is our home?')">
                 <span class="planet-icon">🌎</span> Earth
             </div>
-            <div class="planet-card" onclick="openPlanet('Mars', '🪨 Solid Rock', 'Small', 'I am the Red Planet! I have big volcanoes.', 'Mars')">
+            <div class="planet-card" onclick="openPlanet('Mars', '🪨 Solid Rock', 'Small', 'I am the Red Planet!', 'Mars', 'What color is Mars?')">
                 <span class="planet-icon">🔴</span> Mars
             </div>
-            <div class="planet-card" onclick="openPlanet('Jupiter', '☁️ Gas Giant', 'HUGE', 'I am the biggest planet of all! I have a Giant Red Spot.', 'Jupiter')">
+            <div class="planet-card" onclick="openPlanet('Jupiter', '☁️ Gas Giant', 'HUGE', 'I am the biggest planet of all!', 'Jupiter', 'Is Jupiter the biggest or smallest?')">
                 <span class="planet-icon">🟠</span> Jupiter
             </div>
-            <div class="planet-card" onclick="openPlanet('Saturn', '☁️ Gas Giant', 'Big', 'I have beautiful rings made of ice and dust.', 'Saturn')">
+            <div class="planet-card" onclick="openPlanet('Saturn', '☁️ Gas Giant', 'Big', 'I have beautiful rings made of ice.', 'Saturn', 'Which planet has beautiful rings?')">
                 <span class="planet-icon">🪐</span> Saturn
-            </div>
-            <div class="planet-card" onclick="openPlanet('Uranus', '🧊 Ice Giant', 'Big', 'I am a very cold blue planet and I spin sideways!', 'Uranus')">
-                <span class="planet-icon">💎</span> Uranus
-            </div>
-            <div class="planet-card" onclick="openPlanet('Neptune', '🧊 Ice Giant', 'Big', 'I am the farthest planet from the Sun. It is very windy here!', 'Neptune')">
-                <span class="planet-icon">🔵</span> Neptune
             </div>
         </div>
     </div>
@@ -136,7 +120,17 @@
             <p><strong>Story:</strong> <span id="p-fact"></span></p>
         </div>
         <br>
-        <button class="back-btn" onclick="closePlanet()">⬅ Go Back</button>
+        <button class="btn quiz-btn" onclick="startQuiz()">❓ Take a Quiz!</button>
+        <button class="btn back-btn" onclick="closePanels()">⬅ Go Back</button>
+    </div>
+
+    <div id="quiz-panel">
+        <h1>Space Quiz!</h1>
+        <div class="quiz-box">
+            <p id="quiz-question">Question goes here?</p>
+            <button class="btn choice-btn" id="opt1" onclick="checkAnswer(true)"></button>
+            <button class="btn choice-btn" id="opt2" onclick="checkAnswer(false)"></button>
+        </div>
     </div>
 
     <footer>
@@ -145,8 +139,10 @@
 
     <script>
         const synth = window.speechSynthesis;
+        let currentPlanet = {};
 
-        function openPlanet(name, state, size, fact) {
+        function openPlanet(name, state, size, fact, id, qText) {
+            currentPlanet = { name, state, size, fact, qText };
             document.getElementById('main-menu').style.display = 'none';
             document.getElementById('info-panel').style.display = 'block';
             
@@ -155,17 +151,56 @@
             document.getElementById('p-size').innerText = size;
             document.getElementById('p-fact').innerText = fact;
 
-            synth.cancel();
-            const talk = new SpeechSynthesisUtterance(`${name}. It is made of ${state}. Its size is ${size}. ${fact}`);
-            talk.rate = 0.85; 
-            talk.pitch = 1.1;
-            synth.speak(talk);
+            speak(`${name}. It is made of ${state}. ${fact}`);
         }
 
-        function closePlanet() {
+        function startQuiz() {
+            document.getElementById('info-panel').style.display = 'none';
+            document.getElementById('quiz-panel').style.display = 'block';
+            
+            const q = currentPlanet.qText;
+            document.getElementById('quiz-question').innerText = q;
+            
+            // Set up simple binary choices for a 5-year-old
+            if(currentPlanet.name === "Mars") {
+                document.getElementById('opt1').innerText = "Red";
+                document.getElementById('opt2').innerText = "Blue";
+            } else if(currentPlanet.name === "Jupiter") {
+                document.getElementById('opt1').innerText = "Biggest";
+                document.getElementById('opt2').innerText = "Smallest";
+            } else {
+                document.getElementById('opt1').innerText = currentPlanet.name;
+                document.getElementById('opt2').innerText = "Moon";
+            }
+
+            speak(q);
+        }
+
+        function checkAnswer(isCorrect) {
+            if(isCorrect) {
+                speak("Great job! You are a space expert!");
+                alert("🌟 Correct! Great job!");
+                closePanels();
+            } else {
+                speak("Not quite! Let's look at the facts one more time.");
+                alert("🔭 Almost! Let's check the facts again.");
+                document.getElementById('quiz-panel').style.display = 'none';
+                document.getElementById('info-panel').style.display = 'block';
+            }
+        }
+
+        function closePanels() {
             synth.cancel();
             document.getElementById('main-menu').style.display = 'block';
             document.getElementById('info-panel').style.display = 'none';
+            document.getElementById('quiz-panel').style.display = 'none';
+        }
+
+        function speak(text) {
+            synth.cancel();
+            const talk = new SpeechSynthesisUtterance(text);
+            talk.rate = 0.85;
+            synth.speak(talk);
         }
     </script>
 </body>
